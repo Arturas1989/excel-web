@@ -1,0 +1,31 @@
+.cell > .content:focus-visible {
+  outline: none;
+}
+
+.cell {
+  width: var(--cell-width);
+  height: calc(var(--cell-font-size) + 2 * (var(--cell-space) + var(--cell-selected-border-size)));
+  border: 1px solid black;
+  white-space: nowrap;
+  user-select: none;
+  padding: var(--cell-space);
+  border: var(--cell-border);
+}
+
+.cell > .content {
+  width:fit-content;
+  font-size: var(--cell-font-size);
+  line-height: 1;
+}
+
+.cursorText {
+  cursor: text;
+}
+
+.cursorCell{
+  cursor: cell;
+}
+
+.selected{
+  border: var(--cell-selected-border);
+}
