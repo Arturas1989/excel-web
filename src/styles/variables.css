@@ -1,0 +1,10 @@
+:root{
+  --cell-width: 100px;
+  --cell-space: 5px;
+  --cell-font-size: 1rem;
+  --cell-border-color: rgb(212, 212, 212);
+  --cell-border: 1px solid var(--cell-border-color);
+  --cell-selected-border-color: rgb(33, 115, 70);
+  --cell-selected-border-size: 2.5px;
+  --cell-selected-border: var(--cell-selected-border-size) solid var(--cell-selected-border-color);
+}
