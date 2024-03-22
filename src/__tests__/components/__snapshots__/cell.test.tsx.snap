@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Cell on click and render Cell snapshot 1`] = `
+<div
+  className="cell cursorCell "
+  data-testid="cell"
+  onBlur={[Function]}
+  onClick={[Function]}
+  onDoubleClick={[Function]}
+>
+  <div
+    className="content"
+    data-testid="content"
+    spellCheck="false"
+  >
+    abc
+  </div>
+</div>
+`;
