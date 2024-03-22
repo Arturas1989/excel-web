@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState } from 'react';
 
 type CellProps = {
   name?: string;
@@ -15,7 +15,7 @@ export const Cell = ({ name }: CellProps) => {
   function enableEditing(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     setCursor('cursorText');
     selectCell();
-    if(cellRef.current!.contentEditable === 'true') return;
+    if (cellRef.current!.contentEditable === 'true') return;
     cellRef.current!.contentEditable = 'true';
     cellRef.current!.focus();
     const content = cellRef.current!.textContent;
@@ -26,9 +26,12 @@ export const Cell = ({ name }: CellProps) => {
     if (selection && content && content.length !== 0) {
       const start = cellRef.current!.offsetLeft;
       const letterWidth = cellRef.current!.offsetWidth / content.length;
-      let pos = Math.min(Math.ceil((e.clientX - start) / letterWidth), content.length);
-      if(pos < 0) pos = 0;
-      if(cellRef.current!.firstChild){
+      let pos = Math.min(
+        Math.ceil((e.clientX - start) / letterWidth),
+        content.length
+      );
+      if (pos < 0) pos = 0;
+      if (cellRef.current!.firstChild) {
         range.setStart(cellRef.current!.firstChild, pos);
         range.collapse(true);
         selection.removeAllRanges();
@@ -43,25 +46,25 @@ export const Cell = ({ name }: CellProps) => {
     setSelected('');
   }
 
-  function selectCell(){
+  function selectCell() {
     setSelected('selected');
   }
 
-  function deselectCell(){
-    setSelected('');
-  }
-
   return (
-    <div className="App">
+    <div
+      data-testid="cell"
+      onDoubleClick={(e) => enableEditing(e)}
+      onClick={() => selectCell()}
+      onBlur={disableEditing}
+      className={`cell ${cursor} ${selected}`}
+    >
       <div
-        onDoubleClick={(e) => enableEditing(e)}
-        onClick={() => selectCell()}
-        onMouseUp={() => deselectCell()}
-        onBlur={disableEditing}
-        className={`cell ${cursor} ${selected}`}
+        ref={cellRef}
+        data-testid="content"
+        spellCheck="false"
+        className="content"
       >
-        {' '}
-        <div ref={cellRef} spellCheck='false' className="content">{content}</div>{' '}
+        {content}
       </div>
     </div>
   );
