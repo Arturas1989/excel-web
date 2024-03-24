@@ -4,16 +4,30 @@ exports[`Cell on click and render Cell snapshot 1`] = `
 <div
   className="cell cursorCell "
   data-testid="cell"
+  id="A1"
   onBlur={[Function]}
   onClick={[Function]}
   onDoubleClick={[Function]}
+  style={
+    Object {
+      "border": "1px solid rgb(212, 212, 212)",
+      "height": "34px",
+      "overflow": "clip",
+      "padding": "8px",
+      "width": "100px",
+    }
+  }
 >
   <div
     className="content"
     data-testid="content"
     spellCheck="false"
-  >
-    abc
-  </div>
+    style={
+      Object {
+        "fontSize": "16px",
+        "paddingLeft": "1px",
+      }
+    }
+  />
 </div>
 `;
