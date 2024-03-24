@@ -1,3 +1,13 @@
+.cell-container{
+  display: flex;
+  flex-direction: column;
+  width: 100dvw;
+}
+
+.cell-row{
+  display: flex;
+}
+
 .cell > .content:focus-visible {
   outline: none;
 }
@@ -10,6 +20,8 @@
   user-select: none;
   padding: var(--cell-space);
   border: var(--cell-border);
+  display: flex;
+  flex-shrink: 0;
 }
 
 .cell > .content {
