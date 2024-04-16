@@ -1,18 +1,27 @@
-import { useRef, useState } from 'react';
-import { CellType } from '../types';
+import { memo, useRef, useState } from 'react';
+import { setCursorPositionInACell } from '../utils/helpers/cellHelper';
+import { type DivInput, CellType, Methods } from '../types';
+import CSS from 'csstype';
 
 type CellProps = {
   cell: CellType;
+  methods: Methods;
+  cellStyle: CSS.Properties;
 };
 
-type DivInput = HTMLDivElement | null;
-
-export const Cell = ({ cell }: CellProps) => {
+const InitialCell = ({ cell, methods, cellStyle }: CellProps) => {
   const cellRef = useRef<DivInput>(null);
   const [cursor, setCursor] = useState('cursorCell');
-  const [selectedClass, setSelected] = useState('');
-  const {cellStyles, contentStyles, selected, address, content, contentPaddingLeft} = cell;
+  const {
+    contentStyles,
+    address,
+    content,
+    contentPaddingLeft,
+  } = cell;
+
+  console.log('rendered cell: ' + address);
   
+  const {changeSelected} = methods;
 
   function enableEditing(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     setCursor('cursorText');
@@ -23,45 +32,29 @@ export const Cell = ({ cell }: CellProps) => {
     const content = cellRef.current!.textContent;
 
     //changes cursor position
-    const range = document.createRange();
-    const selection = window.getSelection();
-    if (selection && content && content.length !== 0) {
-      const start = cellRef.current!.offsetLeft + contentPaddingLeft;
-      const letterWidth = cellRef.current!.offsetWidth / content.length;
-      let pos = Math.min(
-        Math.ceil((e.clientX - start) / letterWidth),
-        content.length
-      );
-      if (pos < 0) pos = 0;
-      if (cellRef.current!.firstChild) {
-        range.setStart(cellRef.current!.firstChild, pos);
-        range.collapse(true);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-    }
+    setCursorPositionInACell(content, cellRef, contentPaddingLeft, e)
   }
 
   function disableEditing() {
     cellRef.current!.contentEditable = 'false';
     setCursor('cursorCell');
-    setSelected('');
+    changeSelected('ordinary', address);
   }
 
   function selectCell() {
-    setSelected('selected');
+    changeSelected('selected', address);
   }
+
 
   return (
     <div
       id={address}
-      style={cellStyles}
+      style={cellStyle}
       data-testid="cell"
-      
       onDoubleClick={(e) => enableEditing(e)}
       onClick={() => selectCell()}
       onBlur={disableEditing}
-      className={`cell ${cursor} ${selectedClass}`}
+      className={`cell ${cursor}`}
     >
       <div
         ref={cellRef}
@@ -75,3 +68,5 @@ export const Cell = ({ cell }: CellProps) => {
     </div>
   );
 };
+
+export const Cell = memo(InitialCell);

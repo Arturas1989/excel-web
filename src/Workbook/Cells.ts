@@ -1,11 +1,12 @@
 import CSS from 'csstype';
-import { type CellType, Row } from '../types';
-
-
+import { type Grid, SelectionGrid } from '../types';
 
 
 export class Cells {
-  public grid: Row[];
+  public selectionGrid: SelectionGrid;
+
+  public selectedBorder: string;
+  public ordinaryBorder: string;
   private cellStyles: CSS.Properties;
   private contentStyles: CSS.Properties;
   private selectedStyles: CSS.Properties;
@@ -17,15 +18,17 @@ export class Cells {
   private contentPaddingleft: number;
   private cellWidth: number;
   private cellHeight: number;
-  private rows: number;
-  private cols: number;
+  public rows: number;
+  public cols: number;
 
   constructor() {
+    this.selectedBorder = '2.5px solid rgb(33, 115, 70)';
     this.cellPadding = 8;
     this.contentHeight = 16;
     this.cellWidth = 100;
     this.borderWidth = 1;
     this.contentPaddingleft = 1;
+    this.ordinaryBorder = `${this.borderWidth}px solid rgb(212, 212, 212)`;
     this.selectedStyles = {};
     this.cellHeight = this.contentHeight + (this.cellPadding + this.borderWidth) * 2;
     this.cellStyles = {
@@ -45,45 +48,52 @@ export class Cells {
     this.rows = Math.ceil(this.screenHeight / this.cellHeight);
     this.cols = Math.ceil(this.screenWidth / this.cellWidth);
 
-    this.grid = this.makeGrid();
+    this.selectionGrid = this.makeSelectionGrid({}, []);
 
-    this.updateProperties = this.updateProperties.bind(this);
-    window.addEventListener('resize', this.updateProperties);
+    // this.updateProperties = this.updateProperties.bind(this);
+    // window.addEventListener('resize', this.updateProperties);
   }
 
-  updateProperties() {
+  updateDimensions() {
     
     if(window.innerWidth > this.screenWidth){
       this.screenWidth = window.innerWidth;
       this.screenHeight = window.innerHeight;
       this.rows = Math.round(this.screenHeight / this.cellHeight);
       this.cols = Math.round(this.screenWidth / this.cellWidth);
-      this.grid = this.makeGrid();
+      // this.selectionGrid = this.makeSelectionGrid();
     }
   }
 
+  getAddress(row: number, col: number): string{
+    return this.getColName(col) + row;
+  }
   
-
-  makeGrid(): Row[]{
-    console.log(this.cellHeight)
-    let grid = [];
-    for(let i = 0; i < this.rows; ++i){
-      let row = [];
-      for(let j = 0; j < this.cols; ++j){
-        row.push({
-          cellStyles: this.cellStyles,
-          contentStyles: this.contentStyles,
-          selected: '',
-          address: this.getColName(j) + (i + 1),
-          content: '',
-          contentPaddingLeft: this.contentPaddingleft,
-          row: i,
-          col: j,
-        } as CellType)
-      }
-      grid.push(row);
+  makeSelectionGrid(oldGrid: Grid, oldSelection: string[]): SelectionGrid{
+    this.updateDimensions();
+    let grid = {} as Grid, selected = [...oldSelection] as string[];
+    
+    for(let i = 0; i < this.rows * this.cols; i++){
+        const row = Math.floor(i / this.cols) + 1;
+        const col = i % this.cols;
+        const address = this.getAddress(row, col);
+        if(address in oldGrid){
+          grid[address] = {...oldGrid[address]};
+        } else {
+          grid[address] = {
+            cellStyles: {...this.cellStyles},
+            contentStyles: {...this.contentStyles},
+            prevSelected: null,
+            address,
+            content: '',
+            contentPaddingLeft: this.contentPaddingleft,
+            row,
+            col,
+            index: i 
+          }
+        }
     }
-    return grid;
+    return {grid, selected};
   }
 
   getColName(col: number): string{
