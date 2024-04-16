@@ -1,12 +1,15 @@
-import { CellRow } from './components/CellRow';
 import { useGrid } from './hooks/useGrid';
+import { WorkbookContext } from './context/useWorkbookContext';
+import { CellContainer } from './components';
 
 function App() {
-  const [grid, setGrid] = useGrid();
+  const [selectionGrid, setGrid, cellsObj] = useGrid();
 
-  return (<div className='cell-container'>
-    {grid.map((row, i) => <CellRow key={i} row={row} />)}
-  </div>);
+  return (
+    <WorkbookContext.Provider value={{selectionGrid, setGrid, cellsObj}}>
+      <CellContainer />
+    </WorkbookContext.Provider>
+  );
 }
 
 export default App;

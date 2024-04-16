@@ -1,18 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Cells } from "../Workbook/Cells";
-import { type Row } from "../types";
+import { type SelectionGrid } from "../types";
 
-export const useGrid = (): [Row[],  React.Dispatch<React.SetStateAction<Row[]>>] => {
-  const cells = new Cells();
-  const [grid, setGrid] = useState<Row[]>(cells.grid);
+export const useGrid = (): [SelectionGrid,  React.Dispatch<React.SetStateAction<SelectionGrid>>, Cells] => {
+  const cells = useMemo(() => {
+    return new Cells();
+  }, []) 
+  const [selectionGrid, setSelectionGrid] = useState<SelectionGrid>(cells.selectionGrid);
   
   useEffect(() => {
     const updateGrid = () => {
-      setGrid(cells.grid);
+      const {grid, selected} = selectionGrid;
+      setSelectionGrid(cells.makeSelectionGrid(grid, selected));
     }
     window.addEventListener('resize', updateGrid);
 
     return () => window.removeEventListener('resize', updateGrid);
-  },[cells.grid])
-  return [grid, setGrid];
+  },[cells, selectionGrid])
+  return [selectionGrid, setSelectionGrid, cells];
 };
