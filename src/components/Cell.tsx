@@ -18,10 +18,9 @@ const InitialCell = ({ cell, methods, cellStyle }: CellProps) => {
     content,
     contentPaddingLeft,
   } = cell;
-
-  console.log('rendered cell: ' + address);
   
   const {changeSelected} = methods;
+  if(address === 'A1')console.log(cellStyle)
 
   function enableEditing(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     setCursor('cursorText');
@@ -50,7 +49,7 @@ const InitialCell = ({ cell, methods, cellStyle }: CellProps) => {
     <div
       id={address}
       style={cellStyle}
-      data-testid="cell"
+      data-testid={address}
       onDoubleClick={(e) => enableEditing(e)}
       onClick={() => selectCell()}
       onBlur={disableEditing}

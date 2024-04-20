@@ -10,7 +10,6 @@ type CellRowProps = {
 };
 
 const InitialCellRow = ({ row, methods, index }: CellRowProps) => {
-  console.log('rendered row: ' + index)
   return (
     <div className="cell-row">
       {row.map(cell => {
